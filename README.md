@@ -3,3 +3,4 @@
 
 ###[爬虫-gecco](http://www.geccocrawler.com/)
 ###数据存储：ElasticSearch
+包含全国所有城市的新楼盘的数据
