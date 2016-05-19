@@ -89,7 +89,7 @@ public class ESAction {
 	public static void main(String[] args) throws IOException {
 		JSONObject object = new JSONObject();
 		object.put("name", "扬州");
-		ESAction.getInstance().createIndex("city", "house");
+		ESAction.getInstance().createIndex("vampire", "house");
 	}
 	
 	/**
@@ -152,6 +152,12 @@ public class ESAction {
 			        		.startObject("city").field("type", "string").field("store", "yes").field("index", "not_analyzed").endObject()
 			        		.startObject("name").field("type", "string").field("store", "yes").field("analyzer", "ik_smart").field("search_analyzer", "ik_smart").endObject()
 			        		.startObject("address").field("type", "string").field("store", "yes").field("analyzer", "ik_smart").field("search_analyzer", "ik_smart").endObject()
+			        		.startObject("developer").field("type", "string").field("store", "yes").field("analyzer", "ik_smart").field("search_analyzer", "ik_smart").endObject()
+			        		.startObject("tenement").field("type", "string").field("store", "yes").field("analyzer", "ik_smart").field("search_analyzer", "ik_smart").endObject()
+			        		.startObject("tenement_price").field("type", "string").field("store", "yes").field("analyzer", "ik_smart").field("search_analyzer", "ik_smart").endObject()
+			        		.startObject("volumn").field("type", "string").field("store", "yes").field("index", "not_analyzed").endObject()
+			        		.startObject("green").field("type", "string").field("store", "yes").field("index", "not_analyzed").endObject()
+			        		.startObject("openingtime").field("type", "string").field("store", "yes").field("index", "not_analyzed").endObject()
 			        		.startObject("time").field("type", "date").field("store", "yes").endObject()
 			        		.startObject("pic").field("type", "string").field("store", "yes").endObject()
 			        	.endObject()
