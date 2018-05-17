@@ -20,18 +20,18 @@ public class MyGithub implements HtmlBean {
 	
 	@RequestParameter("user")
 	private String user;
-	
+
 	@RequestParameter("project")
 	private String project;
-	
+
 	@Text(own=false)
 	@HtmlField(cssPath=".repository-meta-content")
 	private String title;
-	
+
 	@Text(own=false)
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(2) .social-count")
 	private int star;
-	
+
 	@Text
 	@HtmlField(cssPath=".pagehead-actions li:nth-child(3) .social-count")
 	private int fork;
@@ -39,7 +39,7 @@ public class MyGithub implements HtmlBean {
 	@Href
 	@HtmlField(cssPath="ul.numbers-summary > li:nth-child(4) > a")
 	private String contributors;
-	
+
 	@HtmlField(cssPath=".entry-content")
 	private String readme;
 
@@ -98,7 +98,7 @@ public class MyGithub implements HtmlBean {
 	public void setFork(int fork) {
 		this.fork = fork;
 	}
-	
+
 	public String getContributors() {
 		return contributors;
 	}
