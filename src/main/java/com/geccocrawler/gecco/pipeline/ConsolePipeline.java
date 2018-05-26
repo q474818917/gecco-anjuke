@@ -15,6 +15,7 @@ public class ConsolePipeline implements Pipeline<SpiderBean> {
 	@Override
 	public void process(SpiderBean bean) {
 		logger.info(JSON.toJSONString(bean));
+		System.out.println(JSON.toJSONString(bean));
 	}
 
 }
