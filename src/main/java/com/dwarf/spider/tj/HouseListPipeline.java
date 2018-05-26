@@ -27,36 +27,6 @@ public class HouseListPipeline implements Pipeline<com.dwarf.spider.anjuke.House
 
 	@Override
 	public void process(HouseList houseList) {
-		List<HouseBrief> briefList = houseList.getBrief();
-		Map<String, String> esMap = new HashMap<>();
-		if(briefList != null && briefList.size() > 0){
-			for(HouseBrief brief : briefList){
-				JSONObject object = new JSONObject();
-				object.put("name", brief.getName());
-				object.put("address", brief.getAddress());
-				object.put("pic", brief.getPic());
-				long price = 0;
-				try{
-					price = Long.parseLong(brief.getPrice());
-				}catch(Exception e){
-					logger.info("price convert error " + e);
-				}finally{
-					object.put("price", price);
-				}
-				object.put("time", new Date());
-				object.put("city", houseList.getCity());
-				object.put("source", "anjuke");
-				String id = this.getNumbers(brief.getId());
-				logger.info("every houseBrief line es Data id is {}, json is {}", id, object.toJSONString());
-				esMap.put(id, object.toJSONString());
-			}
-		}
-		boolean failed = ESAction.getInstance().batchInsertData(esMap, "vampire", "house");
-		if(failed){
-			logger.info("houseBrief into ES has error, data is {}", esMap);
-		}
-		
-		
 		HttpRequest currRequest = houseList.getRequest();
 		logger.info("the pagesize url is {}, and the city is {}", currRequest.getUrl(), houseList.getCity());
 		int currentPage = houseList.getCurrentPage();

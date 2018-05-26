@@ -11,7 +11,7 @@ import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-@Gecco(matchUrl="http://{city}.fang.anjuke.com/loupan/s?p={currentPage}", pipelines={"consolePipeline", "houseListPipeline"})
+@Gecco(matchUrl="http://{city}.fang.anjuke.com/loupan/all/p{currentPage}/", pipelines={"consolePipeline", "houseListPipeline"})
 public class HouseList implements HtmlBean{
 	
 	private static final long serialVersionUID = 3192658614874493142L;
@@ -79,7 +79,7 @@ public class HouseList implements HtmlBean{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HttpRequest request = new HttpGetRequest("http://wx.fang.anjuke.com/loupan/s?p=1");
+		HttpRequest request = new HttpGetRequest("http://wh.fang.anjuke.com/loupan/all/p1/");
 		GeccoEngine.create()
 		.classpath("com.dwarf.spider.anjuke")
 		//开始抓取的页面地址

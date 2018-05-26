@@ -1,9 +1,5 @@
 package com.dwarf.spider.anjuke;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,8 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONObject;
-import com.dwarf.spider.utils.ESAction;
 import com.geccocrawler.gecco.annotation.PipelineName;
 import com.geccocrawler.gecco.pipeline.Pipeline;
 import com.geccocrawler.gecco.request.HttpRequest;
@@ -26,7 +20,7 @@ public class HouseListPipeline implements Pipeline<HouseList>{
 
 	@Override
 	public void process(HouseList houseList) {
-		List<HouseBrief> briefList = houseList.getBrief();
+		/*List<HouseBrief> briefList = houseList.getBrief();
 		Map<String, String> esMap = new HashMap<>();
 		if(briefList != null && briefList.size() > 0){
 			for(HouseBrief brief : briefList){
@@ -54,7 +48,7 @@ public class HouseListPipeline implements Pipeline<HouseList>{
 		if(failed){
 			logger.info("houseBrief into ES has error, data is {}", esMap);
 		}
-		
+		*/
 		
 		HttpRequest currRequest = houseList.getRequest();
 		logger.info("the pagesize url is {}, and the city is {}", currRequest.getUrl(), houseList.getCity());
@@ -65,10 +59,10 @@ public class HouseListPipeline implements Pipeline<HouseList>{
 		if(nextPage <= totalPage) {
 			String nextUrl = "";
 			String currUrl = currRequest.getUrl();
-			if(currUrl.indexOf("p=") != -1) {
-				nextUrl = StringUtils.replaceOnce(currUrl, "p=" + currentPage, "p=" + nextPage);
+			if(currUrl.indexOf("p") != -1) {
+				nextUrl = StringUtils.replaceOnce(currUrl, "p" + currentPage, "p" + nextPage);
 			} else {
-				nextUrl = currUrl + "?" + "p=" + nextPage;
+				nextUrl = currUrl + "?" + "p" + nextPage;
 			}
 			SchedulerContext.into(currRequest.subRequest(nextUrl));
 		}

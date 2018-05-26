@@ -1,6 +1,5 @@
 package com.dwarf.spider.tj;
 
-import com.dwarf.spider.anjuke.HouseBrief;
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
@@ -10,11 +9,9 @@ import com.geccocrawler.gecco.request.HttpGetRequest;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-import java.util.List;
-
-@Gecco(matchUrl="https://tj.lianjia.com/ershoufang/pg1", pipelines={"consolePipeline"})
+@Gecco(matchUrl="https://tj.lianjia.com/ershoufang/pg{currentPage}/", pipelines={"consolePipeline"})
 public class HouseList implements HtmlBean{
-	
+
 	private static final long serialVersionUID = 3192658614874493142L;
 
 	@Request
@@ -61,7 +58,7 @@ public class HouseList implements HtmlBean{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HttpRequest request = new HttpGetRequest("https://tj.lianjia.com/ershoufang/pg1");
+		HttpRequest request = new HttpGetRequest("https://tj.lianjia.com/ershoufang/pg1/");
 		GeccoEngine.create()
 		.classpath("com.dwarf.spider.tj")
 		//开始抓取的页面地址
