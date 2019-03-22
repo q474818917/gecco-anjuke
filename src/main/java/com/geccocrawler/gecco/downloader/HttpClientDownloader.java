@@ -5,15 +5,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -21,10 +21,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.CharArrayBuffer;
 
 import com.geccocrawler.gecco.request.HttpPostRequest;
@@ -32,6 +34,8 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.response.HttpResponse;
 import com.geccocrawler.gecco.spider.SpiderThreadLocal;
 import com.geccocrawler.gecco.utils.UrlUtils;
+
+import javax.net.ssl.SSLException;
 
 /**
  * 利用httpclient下载
@@ -51,7 +55,11 @@ public class HttpClientDownloader extends AbstractDownloader {
 		PoolingHttpClientConnectionManager syncConnectionManager = new PoolingHttpClientConnectionManager();
 		syncConnectionManager.setMaxTotal(1000);
 		syncConnectionManager.setDefaultMaxPerRoute(50);
-		httpClient = HttpClientBuilder.create().setDefaultRequestConfig(clientConfig).setConnectionManager(syncConnectionManager).build();
+		httpClient = HttpClientBuilder.create().
+				setDefaultRequestConfig(clientConfig).
+				setConnectionManager(syncConnectionManager).
+				setRetryHandler(getRetryHandler()).
+				build();
 	}
 
 	@Override
@@ -156,4 +164,28 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         return buffer.toString();
     }
+
+	private HttpRequestRetryHandler getRetryHandler() {
+		return new HttpRequestRetryHandler() {
+			@Override
+			public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+				if (executionCount > 3) {
+					return false;
+				}
+				if (exception instanceof UnknownHostException || exception instanceof ConnectTimeoutException
+						|| !(exception instanceof SSLException) || exception instanceof NoHttpResponseException) {
+					return true;
+				}
+				HttpClientContext clientContext = HttpClientContext.adapt(context);
+				org.apache.http.HttpRequest request = clientContext.getRequest();
+				boolean idempotent = !(request instanceof HttpEntityEnclosingRequest);
+				if (idempotent) {
+					// 如果请求被认为是幂等的，那么就重试。即重复执行不影响程序其他效果的
+					return true;
+				}
+				return false;
+			}
+
+		};
+	}
 }
